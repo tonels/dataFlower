@@ -292,10 +292,10 @@ public class ExcelUtilsTest {
 
     @Test
     public void th1() throws InterruptedException {
-        String filename = "D:/NewExcelFile.xlsx" ;
+        String filePath = "D:/NewExcelFile.xlsx" ;
 
-        new Thread(new Athread(filename,1)).start();
-        new Thread(new Athread(filename,2)).start();
+        new Thread(new Athread(filePath,1)).start();
+        new Thread(new Athread(filePath,2)).start();
         Thread.sleep(3000);
 
     }
@@ -350,13 +350,18 @@ public class ExcelUtilsTest {
 
 
     @Test
-    public void thB() throws InterruptedException {
+    public void thB() throws InterruptedException, IOException {
         String filename = "D:/ExcelB.xlsx" ;
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         for (int i = 0; i < 5; i++) {
             workbook.createSheet("sheet"+ i);
         }
+
+        FileOutputStream fos = new FileOutputStream(filename);
+        fos.flush();
+        fos.close();
+
         System.out.println(workbook.getSheetAt(0).getSheetName());
 
         // 这里执行会出错，因为 excel 并没有生成
@@ -365,9 +370,6 @@ public class ExcelUtilsTest {
         Thread.sleep(3000);
 
     }
-
-
-
 
     class BThread implements Runnable{
 
