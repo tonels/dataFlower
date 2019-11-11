@@ -247,38 +247,149 @@ public class ExcelUtilsTest {
                     e.printStackTrace();
                 }
             }
-        }).run();
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String name = Thread.currentThread().getName();
+                System.out.println(name);
+                try {
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    XSSFWorkbook workbook = new XSSFWorkbook();
+
+                    XSSFSheet sheet1 = workbook.createSheet(name);
+
+                    Row row = sheet1.createRow(0);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue("Navss Value");
+
+                    Cell cell1 = row.createCell(1);
+
+                    cell1.setCellValue("Amoussnt Change");
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue("Percssssent Change");
+
+                    workbook.write(fos);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Test
-    public void th1(){
-        String filename = "D:/NewExcelFile.xls" ;
+    public void th1() throws InterruptedException {
+        String filename = "D:/NewExcelFile.xlsx" ;
 
-        new Thread(new Athread(filename)).start();
+        new Thread(new Athread(filename,1)).start();
+        new Thread(new Athread(filename,2)).start();
+        Thread.sleep(3000);
 
     }
 
+
+
+//    @Test
+//    public void s
 
 
     class Athread implements Runnable{
 
         private String filePath;
         private String name;
+        private int id;
 
-        public Athread(String filePath) {
+        public Athread(String filePath,int id) {
             this.filePath = filePath;
-            this.name = Thread.currentThread().getName();
+            this.id = id;
         }
 
         @Override
         public void run() {
             try {
-                System.out.println("线程启动了" + name);
+                name = Thread.currentThread().getName();
+                System.out.println("线程启动了" + Thread.currentThread().getName());
                 FileOutputStream fos = new FileOutputStream(filePath);
                 XSSFWorkbook workbook = new XSSFWorkbook();
 
-                XSSFSheet sheet1 = workbook.createSheet(name);
+                workbook.setSheetName(id,name);
+                XSSFSheet sheet1 = workbook.getSheetAt(id);
+
+                Row row = sheet1.createRow(0);
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue("Nav Value");
+
+                Cell cell1 = row.createCell(1);
+
+                cell1.setCellValue("Amount Change");
+
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue("Percent Change");
+
+                workbook.write(fos);
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Test
+    public void thB() throws InterruptedException {
+        String filename = "D:/ExcelB.xlsx" ;
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        for (int i = 0; i < 5; i++) {
+            workbook.createSheet("sheet"+ i);
+        }
+        System.out.println(workbook.getSheetAt(0).getSheetName());
+
+        // 这里执行会出错，因为 excel 并没有生成
+        new Thread(new BThread(filename,1)).start();
+        new Thread(new BThread(filename,3)).start();
+        Thread.sleep(3000);
+
+    }
+
+
+
+
+    class BThread implements Runnable{
+
+        private String filePath;
+        private String name;
+        private int id;
+
+        public BThread(String filePath,int id) {
+            this.filePath = filePath;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            try {
+                name = Thread.currentThread().getName();
+                System.out.println("线程启动了" + Thread.currentThread().getName());
+                FileOutputStream fos = new FileOutputStream(filePath);
+                XSSFWorkbook workbook = new XSSFWorkbook();
+
+                workbook.setSheetName(id,name);
+                XSSFSheet sheet1 = workbook.getSheetAt(id);
 
                 Row row = sheet1.createRow(0);
                 Cell cell0 = row.createCell(0);
