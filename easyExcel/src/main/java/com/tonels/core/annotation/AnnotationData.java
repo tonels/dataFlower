@@ -1,7 +1,5 @@
 package com.tonels.core.annotation;
 
-import java.util.Date;
-
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
@@ -10,8 +8,9 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.converters.doubleconverter.DoubleStringConverter;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @author Jiaju Zhuang

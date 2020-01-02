@@ -28,10 +28,11 @@ public class CellDataDataListener extends AnalysisEventListener<CellDataData> {
         Assert.assertEquals(list.size(), 1);
         CellDataData cellDataData = list.get(0);
 
-        Assert.assertEquals(cellDataData.getDate().getStringValue(), "2020年01月01日");
-        Assert.assertEquals((long)cellDataData.getInteger1().getData(), 2L);
-        Assert.assertEquals((long)cellDataData.getInteger2(), 2L);
-        Assert.assertEquals(cellDataData.getFormulaValue().getFormulaValue(), "B2+C2");
+        String stringValue = cellDataData.getDate().getStringValue();
+        Integer data = cellDataData.getInteger1().getData();
+        Integer integer2 = cellDataData.getInteger2();
+
+        String formulaValue = cellDataData.getFormulaValue().getFormulaValue(); // B2+C2
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }
 }
