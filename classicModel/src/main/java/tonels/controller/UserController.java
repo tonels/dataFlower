@@ -1,17 +1,16 @@
 package tonels.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import org.apache.commons.collections4.Get;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tonels.excel.UserExport;
+import tonels.listen.M1Listen;
 import tonels.mapper.CustomerMapper;
+import tonels.model.DbExcel1;
 import tonels.model.UserInfo;
 import tonels.repository.UserRepository;
 import tonels.util.ResultBean;
@@ -19,9 +18,11 @@ import tonels.util.TestFileUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,6 +37,7 @@ public class UserController {
     /**
      * 浏览器访问，模板导出
      * todo 无数据是导出，会报错
+     *
      * @return
      */
     @GetMapping("/template-export")
@@ -101,7 +103,7 @@ public class UserController {
 //    }
 
     @GetMapping("/page")
-    public void t2(){
+    public void t2() {
         Page<UserInfo> all = userRepository.findAll(PageRequest.of(0, 5));
 
         for (int i = 0; i < all.getTotalPages(); i++) {
@@ -115,9 +117,6 @@ public class UserController {
     }
 
 
-
-
-
     /**
      * 基于模板导出
      */
@@ -127,17 +126,25 @@ public class UserController {
     }
 
     /**
-     * 导入
+     * Read1 -- 导入
      */
     @GetMapping("/import1")
-    public ResultBean import1() {
-        return null;
+    public ResultBean import1(/*@RequestParam(value = "file") MultipartFile file*/) throws IOException {
+//        EasyExcel.read(file.getInputStream(), new M1Listen()).sheet("导出DB设计文档").doRead();
+//
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "导出DB设计文档.xlsx";
+        // 这里 需要指定读用哪个class去读，然后指定读取Sheet（默认会读第一个，这里注意原有的Excel的格式问题）
+//        List<DbExcel1> sheet1 = EasyExcel.read(fileName, DbExcel1.class, new M1Listen()).sheet("Sheet1").doRead(); // 同步读
+        List<DbExcel1> sheet1 = EasyExcel.read(fileName, DbExcel1.class, new M1Listen()).sheet("Sheet1").doReadSync();
+        Map<String, List<DbExcel1>> collect = sheet1.stream().collect(Collectors.groupingBy(DbExcel1::getTableName));
+
+        return ResultBean.ok(collect);
     }
 
     /**
-     * 基于模板导入
+     * Read2 -- 基于模板导入
      */
-    @GetMapping("/import-with-template")
+    @PostMapping("/import-with-template")
     public ResultBean importWithTemplate() {
         return null;
     }
