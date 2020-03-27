@@ -1,8 +1,13 @@
 package test;
 
+import org.junit.Test;
+
 public class TTe {
-    public static void main(String[] args) {
-        System.out.println("Hello world");
+
+    @Test
+    public void t2() {
+//        BeanUtils.copyProperties();
     }
+
 
 }
